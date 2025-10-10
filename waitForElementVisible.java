@@ -9,3 +9,11 @@
 			System.out.println("Element visible: " + locatorWeb);
 			getScreenshot(driver);
 		} 
+//		else if (locatorWeb.isDisplayed()) {
+//			driver.navigate().refresh();
+//			Thread.sleep(25);
+//			System.out.println("Element visible in Thread2: " + locatorWeb);
+//			getScreenshot(driver);
+		}
+		return locatorWeb;
+	}

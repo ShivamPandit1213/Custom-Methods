@@ -81,6 +81,25 @@ public class PublicMethods {
 		return element;
 	}
 
+		public void scrollToTop(WebDriver driver) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		// Scroll to top
+		js.executeScript("window.scrollTo(0, 0);");
+	}
+
+	public void scrollToBottom(WebDriver driver) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		// Scroll to bottom
+		js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+	}
+	
+	public void scrollToElement(String element) {
+		WebElement scroll = driver.findElement(By.xpath(element));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		// Scroll element into center
+		js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", scroll);
+	}
+	
 	public WebElement moveToElement(WebDriver driver, String locator) throws Throwable {
 		Actions action = new Actions(driver);
 		Thread.sleep(2000);

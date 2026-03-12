@@ -1,17 +1,18 @@
-	public static String getChildWindowName(WebDriver driver, String parentWindow) throws Throwable {
-//		Set<String> sessionId = driver.getWindowHandles();
-		String childName = null;
-//		System.out.println("All window sessionId: "+sessionId);
-		Set<String> allWindows = driver.getWindowHandles();
-		for (String newChild : allWindows) {
-			if (!newChild.equals(parentWindow)) {
-				driver = driver.switchTo().window(newChild);
-				childName = getTitle(driver);
-				System.out.println("\nChild Window Name: " + driver);
-				break;
-			}
-		}
-		return childName;
+	// ===== GET CHILD WINDOW HANDLING AND SWITCH TO IT =====
+	public static String switchToChildWindow(WebDriver driver, String parentWindow) {
+	    Set<String> allWindows = driver.getWindowHandles();
+	    for (String window : allWindows) {
+	        // Check if it is not parent window
+	        if (!window.equals(parentWindow)) {
+	            driver.switchTo().window(window);
+	            System.out.println("🔄 Switched to child window: " + driver.getTitle());
+	            return window; // return immediately when child found
+	        }
+	    }
+
+	    // If no child window found
+	    System.err.println("⚠️ No child window found.");
+	    return null;
 	}
 
 _________________________________________________________________________________________

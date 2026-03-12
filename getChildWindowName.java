@@ -9,7 +9,6 @@
 	            return window; // return immediately when child found
 	        }
 	    }
-
 	    // If no child window found
 	    System.err.println("⚠️ No child window found.");
 	    return null;

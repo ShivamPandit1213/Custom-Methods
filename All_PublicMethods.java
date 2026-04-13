@@ -33,54 +33,42 @@ public class PublicMethods {
 		this.action = new Actions(driver);
 		this.wait = new WebDriverWait(driver, Duration.ofSeconds(25));
 	}
-
-	public WebDriver getScreenshot() throws Throwable {
-//		// Create Screenshots directory if it doesn't exist
-//		File screenshotDir = new File("./Screenshots");
-//		if (!screenshotDir.exists()) {
-//			screenshotDir.mkdirs();
-//		}
-//		// Take the screenshot
-//		TakesScreenshot sc = (TakesScreenshot) driver;
-//		File fileType = sc.getScreenshotAs(OutputType.FILE);
-//		// Format the timestamp for the file name
-//		String timeformat = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-//		File fileLocation = new File("./Screenshots/screenshot" + timeformat + ".png");
-//		// Copy the screenshot to the target location
-//		FileUtils.copyFileToDirectory(fileType, fileLocation);
-//		// Print the file path for debugging
-//		System.out.println("Screenshot Captured : " + fileLocation);
-		
-		File file = new File("./Screenshots");
-		if (file.exists()) {
-			// If folder Screenshots exist then create screenshot
-			TakesScreenshot sc = (TakesScreenshot) driver;
-			File fileType = sc.getScreenshotAs(OutputType.FILE);
-			String fileFormatName = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-			File fileLocation = new File("./Screenshots/screenshot" + fileFormatName + ".png");
-			FileUtils.copyFile(fileType, fileLocation);
-			System.out.println("Captured Screenshot : " + fileLocation);
-		} else {
-			if (file.createNewFile()) {
-				// If folder Screenshots does not exist then create folder afterthat screenshot
-				TakesScreenshot sc = (TakesScreenshot) driver;
-				File fileType = sc.getScreenshotAs(OutputType.FILE);
-				String fileFormatName = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-				File fileLocation = new File("./Screenshots/screenshot" + fileFormatName + ".png");
-				FileUtils.copyFile(fileType, fileLocation);
-				System.out.println("Captured Screenshot : " + fileLocation);
-			}
+---------------------------------------------------------------------------------------------------------
+// 1. Parameterized method (Custom prefix)
+	public File getScreenshot(String fileNamePrefix) throws IOException {
+		File screenshotDir = new File("src/test/resources/screenshots");
+		if (!screenshotDir.exists()) {
+			screenshotDir.mkdirs();
+			System.out.println("Screenshot folder created.");
 		}
 
-		return driver;
+		// Fallback just in case someone passes a null value
+		if (fileNamePrefix == null) {
+			fileNamePrefix = "Screenshot_";
+		}
+
+		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		
+		// Use the parameterized prefix here
+		File destination = new File(screenshotDir, fileNamePrefix + timestamp + ".png");
+		
+		FileUtils.copyFile(source, destination);
+		System.out.println("\nScreenshot captured: " + destination);
+		return destination;
 	}
 
+	// 2. Overloaded method (Default behavior)
+	public File getScreenshot() throws IOException {
+		// Calls the main method and passes the default prefix
+		return getScreenshot("Screenshot_"); 
+	}
 	public WebElement actionToPerform(WebDriver driver, String locator) throws Throwable {
 		element = driver.findElement(By.xpath(locator));
 		Thread.sleep(2000);
 		return element;
 	}
-
+---------------------------------------------------------------------------------------------------------
 		public void scrollToTop(WebDriver driver) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		// Scroll to top

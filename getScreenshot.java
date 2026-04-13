@@ -1,14 +1,29 @@
-	public static File getScreenshot(WebDriver driver) throws IOException {
-		File fileLocation = null;
-		File flName = new File("./Screenshots");
-		if (!flName.exists()) {
-			flName.mkdirs(); // Create directory if it doesn't exist // Creates directory if not exists
-			System.out.println("New Folder Created");
+// 1. Parameterized method (Custom prefix)
+	public File getScreenshot(String fileNamePrefix) throws IOException {
+		File screenshotDir = new File("src/test/resources/screenshots");
+		if (!screenshotDir.exists()) {
+			screenshotDir.mkdirs();
+			System.out.println("Screenshot folder created.");
 		}
-		String timeFormat = new SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().getTime());
-		TakesScreenshot sc = (TakesScreenshot) driver;
-		File fileType = sc.getScreenshotAs(OutputType.FILE);
-		fileLocation = new File("src/test/resources/screenshots/Screenshot" + timeFormat + ".png");
-		FileUtils.copyFile(fileType, fileLocation);
-		return fileLocation;
+
+		// Fallback just in case someone passes a null value
+		if (fileNamePrefix == null) {
+			fileNamePrefix = "Screenshot_";
+		}
+
+		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		
+		// Use the parameterized prefix here
+		File destination = new File(screenshotDir, fileNamePrefix + timestamp + ".png");
+		
+		FileUtils.copyFile(source, destination);
+		System.out.println("\nScreenshot captured: " + destination);
+		return destination;
+	}
+
+	// 2. Overloaded method (Default behavior)
+	public File getScreenshot() throws IOException {
+		// Calls the main method and passes the default prefix
+		return getScreenshot("Screenshot_"); 
 	}

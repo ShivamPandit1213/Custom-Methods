@@ -1,3 +1,7 @@
+/** Maximum Flexibility
+Because both methods exist side-by-side, you give the person writing the test options without trapping them:
+"I just need a quick picture:" They use getScreenshot(); (The second method handles it by providing the default name).
+"I need to specifically label this major error:" They use getScreenshot("PaymentGatewayError_"); (The first method handles it directly).
 /**
 	 * METHOD 1: The "Worker" Method (Parameterized)
 	 * Captures a screenshot and saves it with a custom name.

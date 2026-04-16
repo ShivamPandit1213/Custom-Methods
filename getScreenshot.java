@@ -7,33 +7,50 @@
 	 */
 	public File getScreenshot(String fileNamePrefix) throws IOException {
 		
-		// 1. Define the target directory where screenshots will be saved
 		File screenshotDir = new File("src/test/resources/screenshots");
 		
-		// 2. Check if directory exists. If not, create it and any missing parent folders.
 		if (!screenshotDir.exists()) {
+			/* * DEEP DIVE: mkdirs() vs mkdir()
+			 * mkdirs() (plural) creates the "screenshots" folder PLUS any missing parent 
+			 * folders (like "resources" or "test"). If we used mkdir() (singular) and the 
+			 * "resources" folder didn't exist yet on a new machine, the code would crash.
+			 */
 			screenshotDir.mkdirs();
 			System.out.println("Screenshot folder created.");
 		}
 
-		// 3. Defensive Check: If another script accidentally passes 'null', use a default.
+		// Defensive Check: If another script accidentally passes 'null', use a default.
 		if (fileNamePrefix == null) {
 			fileNamePrefix = "Screenshot_";
 		}
 
-		// 4. Generate a unique timestamp to ensure old screenshots aren't overwritten
+		/* * DEEP DIVE: Time Generation
+		 * 1. Calendar.getInstance(): Calendar is an abstract class, so we can't use 'new Calendar()'. 
+		 * This factory method gets a calendar initialized with the computer's current timezone and time.
+		 * 2. .getTime(): Converts that calendar into a standard Java Date object.
+		 * 3. SimpleDateFormat: Translates that raw Date object into a readable String 
+		 * using the pattern provided (YearMonthDay_HourMinuteSecond) so files don't overwrite each other.
+		 */
 		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 		
-		// 5. Tell Selenium to take the picture and store it in system memory (temp file)
+		/* * DEEP DIVE: Taking the Screenshot
+		 * 1. (TakesScreenshot): This is "Type Casting". A standard WebDriver only knows how to 
+		 * navigate and click. This tells Java "treat this driver like a camera for this one line."
+		 * 2. OutputType.FILE: Tells Selenium to output the image as a physical file, 
+		 * rather than raw binary code or a Base64 text string.
+		 */
 		File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		
-		// 6. Combine the directory, custom prefix, timestamp, and .png extension into a final path
+		// Combine the directory, custom prefix, timestamp, and .png extension into a final path
 		File destination = new File(screenshotDir, fileNamePrefix + timestamp + ".png");
 		
-		// 7. Move the image from temporary memory to your permanent project folder
+		/* * DEEP DIVE: FileUtils.copyFile()
+		 * Selenium initially saves screenshots in a hidden, temporary OS folder (which gets 
+		 * deleted automatically by Windows/Mac later to save space). FileUtils safely duplicates 
+		 * that temporary file into your permanent project directory before it disappears.
+		 */
 		FileUtils.copyFile(source, destination);
 		
-		// 8. Print the location to the console and return the file object
 		System.out.println("\nScreenshot captured: " + destination);
 		return destination;
 	}

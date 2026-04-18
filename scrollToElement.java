@@ -4,3 +4,12 @@
 		// Scroll element into center
 		js.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", scroll);
 	}
+-------------------------------------------------------------------------------------------------------------------
+	public void scrollToCenter(String locator) {
+		// 1. Find the element using the String locator
+	    WebElement element = driver.findElement(By.xpath(locator));
+	    
+	    // 2. Scroll to it
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    js.executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+	}

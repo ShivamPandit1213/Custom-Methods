@@ -13,3 +13,14 @@
 	    JavascriptExecutor js = (JavascriptExecutor) driver;
 	    js.executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
 	}
+-------------------------------------------------------------------------------------------------------------------
+/**
+ * Custom method to hover over a web element.
+ * @param xpath The string locator of the element to hover over.
+ */
+public void hoverOverElement(String xpath) {
+    WebElement element = driver.findElement(By.xpath(xpath));
+    Actions action = new Actions(driver);
+    action.moveToElement(element).perform();
+    System.out.println("Hovered over element: " + xpath);
+}
